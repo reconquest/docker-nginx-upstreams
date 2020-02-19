@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+# one time just to make valid upstreams
+docker-gen /upstream.conf.template /etc/nginx/conf.d/upstreams.conf
+
+# background job
+docker-gen -watch -notify "killall -HUP nginx" /upstream.conf.template /etc/nginx/conf.d/upstreams.conf &
+
+# foreground job
+mkdir -p /run/nginx/
+nginx -g 'daemon off;'

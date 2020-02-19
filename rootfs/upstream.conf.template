@@ -1,0 +1,15 @@
+{{ define "host" }}
+    {{ $container := . }}
+    {{ range $index, $network := .Networks }}
+        {{ if ne $network.IP "" }}
+    server {{ $network.IP }}:{{index $container.Labels "upstream-port"}} {{index $container.Labels "upstream-options"}};
+        {{ end }}
+    {{ end }}
+{{ end }}
+{{ range $upstreamName, $containers := (groupByLabel $ "upstream-name") }}
+upstream {{ $upstreamName }} {
+    {{ range $index, $container := $containers }}
+        {{ template "host" $container }}
+    {{ end }}
+}
+{{ end }}
