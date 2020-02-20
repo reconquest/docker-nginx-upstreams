@@ -8,8 +8,6 @@
 {{ end }}
 {{ range $upstreamName, $containers := (groupByLabel $ "upstream-name") }}
 upstream {{ $upstreamName }} {
-    sticky;
-
     {{ range $index, $container := $containers }}
         {{ template "host" $container }}
     {{ end }}
